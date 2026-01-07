@@ -1,0 +1,51 @@
+### Passo 1: Il "Lab Notebook" (Fallo ORA)
+Servirà per annotare ogni volta che lanciamo il modello:
+
+* **Data/Ora**
+* **Filtri usati sui dati** (es. Magnitudo minima, profondità).
+* **Iperparametri del modello** (es. Learning Rate, n_estimators, depth).
+* **Risultato ottenuto** (b-value stimato, MSE, Accuracy).
+
+> Quando scriveremo il report finale, avremo già la tabella pronta per dimostrare il "rigore scientifico" che vuole il prof.
+
+---
+
+### Passo 2: Preparazione dei Dati (La "Fisica" del problema)
+
+Usaiamo il paper di **Collettini et al. (2022)** come guida.
+
+Il paper dimostra che il *b-value* cambia drasticamente a seconda di **dove** sono i terremoti.
+Nel codice di pulizia dati (Preprocessing), devi provare a dividere il catalogo in due gruppi, se possibile, o almeno essere consapevole di questa distinzione:
+
+1. 
+**On-Fault Seismicity (Sulla faglia):** Terremoti vicini al piano di faglia principale (es. entro 0.5 km). Qui il *b-value* dovrebbe uscire basso (intorno a **1.17 - 1.34**) perché c'è alto attrito (stick-slip).
+2. 
+**Distributed Seismicity (Fuori faglia):** Terremoti sparsi nel volume di roccia circostante (spesso Evaporiti Triassiche). 
+Qui il *b-value* dovrebbe uscire alto (intorno a **1.54 - 1.81**) perché la roccia si deforma in modo duttile.
+
+
+**Obiettivo Codice:** Creare uno script che pulisce il catalogo INGV, applica la Magnitudo di Completezza () e, avendo le coordinate della faglia, separa questi due gruppi.
+
+---
+
+### Passo 3: Il "Benchmark" (Il controllo di sanità)
+
+Prima di lanciare reti neurali complesse, calcolare il *b-value* con la formula classica (Maximum Likelihood Estimation - MLE) su questi dati puliti.
+* **A cosa serve:** Se il tuo calcolo manuale ti dà  per la zona di faglia e  per la zona fuori, replichiamo il paper di Collettini.
+* A quel punto sappiamo che i dati sono giusti e possiamo usare il Machine Learning per vedere se riesce a predire questi valori meglio o a trovare altre correlazioni.
+
+---
+
+### Passo 4: Il Modello ML vero e proprio
+
+* Input: Coordinate (Lat, Lon, Depth), Tempo.
+* Target: b-value (o Magnitudo, a seconda di come avete impostato il problema di regressione/classificazione).
+* Mentre fai il tuning, salvare i parametri nel file del Passo 1.
+
+---
+
+### Passo 5: Scrittura del Report
+Solo ora apri il file del report. La struttura sarà facilissima perché abbiamo già tutto:
+1. **Data Prep:** "Abbiamo filtrato i dati seguendo Collettini 2022..."
+2. **Method:** "Abbiamo settato gli iperparametri così (vedi tabella)..."
+3. **Results:** "Il modello conferma che nelle zone ad alto stress (on-fault) il b-value scende a 1.2, mentre fuori sale..."
