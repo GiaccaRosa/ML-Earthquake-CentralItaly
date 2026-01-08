@@ -10,7 +10,7 @@ We apply **DBSCAN clustering** to isolate fault systems (Amatrice vs. Visso/Norc
 
 ## Content
 - `dbscan_synthetic_test.py`: Proof of concept using synthetic seismic data.
-- (Qui aggiungerete i file futuri...)
+- (Loading...)
 
 ## Data Source
 Seismic catalog provided by INGV (Istituto Nazionale di Geofisica e Vulcanologia).
