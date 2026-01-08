@@ -13,4 +13,4 @@ We apply **DBSCAN clustering** to isolate fault systems (Amatrice vs. Visso/Norc
 - (Loading...)
 
 ## Data Source
-Seismic catalog provided by INGV (Istituto Nazionale di Geofisica e Vulcanologia).
+.
