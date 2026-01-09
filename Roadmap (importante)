@@ -1,51 +1,46 @@
-### Passo 1: Il "Lab Notebook" (Fallo ORA)
-Servirà per annotare ogni volta che lanciamo il modello:
-
-* **Data/Ora**
-* **Filtri usati sui dati** (es. Magnitudo minima, profondità).
-* **Iperparametri del modello** (es. Learning Rate, n_estimators, depth).
-* **Risultato ottenuto** (b-value stimato, MSE, Accuracy).
-
-> Quando scriveremo il report finale, avremo già la tabella pronta per dimostrare il "rigore scientifico" che vuole il prof.
-
----
-
-### Passo 2: Preparazione dei Dati (La "Fisica" del problema)
-
-Usaiamo il paper di **Collettini et al. (2022)** come guida.
-
-Il paper dimostra che il *b-value* cambia drasticamente a seconda di **dove** sono i terremoti.
-Nel codice di pulizia dati (Preprocessing), devi provare a dividere il catalogo in due gruppi, se possibile, o almeno essere consapevole di questa distinzione:
-
+### 🗺️ Fase 1: Preparazione e Clustering (✅ FATTO)
 1. 
-**On-Fault Seismicity (Sulla faglia):** Terremoti vicini al piano di faglia principale (es. entro 0.5 km). Qui il *b-value* dovrebbe uscire basso (intorno a **1.17 - 1.34**) perché c'è alto attrito (stick-slip).
-2. 
-**Distributed Seismicity (Fuori faglia):** Terremoti sparsi nel volume di roccia circostante (spesso Evaporiti Triassiche). 
-Qui il *b-value* dovrebbe uscire alto (intorno a **1.54 - 1.81**) perché la roccia si deforma in modo duttile.
+**Caricamento Dati:** Avete il catalogo ad alta risoluzione (Tan et al.).
+
+2. **DBSCAN:** Avete già lanciato l'algoritmo e trovato vari cluster.
+* *Cosa teniamo:* Il tuning con `min_samples=20` (o quello che vi ha dato i cluster più puliti) è perfetto.
+* *Cambio di Prospettiva:* Non ci interessa più se un cluster è "on-fault" o "background". Ci interessa **DOVE** sta.
 
 
-**Obiettivo Codice:** Creare uno script che pulisce il catalogo INGV, applica la Magnitudo di Completezza () e, avendo le coordinate della faglia, separa questi due gruppi.
+### 🔄 Fase 2: Selezione Spaziale (📍 DA FARE ORA)
 
----
+*Obiettivo: Isolare la "zona di preparazione" di Visso/Norcia.*
+Il DBSCAN serve per separare oggettivamente lo sciame di aftershock di Amatrice (che è già scoppiato) dalla zona a Nord che si *sta preparando* a rompere.
 
-### Passo 3: Il "Benchmark" (Il controllo di sanità)
+* **Azione:** Guardate la mappa dei cluster generata dal codice della tua collega.
+* Il "blob" grande a Sud è **Amatrice** (quello che nel report chiamate "Amatrice aftershocks").
 
-Prima di lanciare reti neurali complesse, calcolare il *b-value* con la formula classica (Maximum Likelihood Estimation - MLE) su questi dati puliti.
-* **A cosa serve:** Se il tuo calcolo manuale ti dà  per la zona di faglia e  per la zona fuori, replichiamo il paper di Collettini.
-* A quel punto sappiamo che i dati sono giusti e possiamo usare il Machine Learning per vedere se riesce a predire questi valori meglio o a trovare altre correlazioni.
+* I cluster che si trovano **più a Nord** (verso Visso e Norcia) sono il vostro target. Dovete identificare il loro numero ID (es. Cluster 2, Cluster 5, ecc.).
+* *Nota:* Potrebbero essere più di un cluster. Se necessario, uniteli in un unico gruppo "Nord".
 
----
 
-### Passo 4: Il Modello ML vero e proprio
+### 📉 Fase 3: Analisi Temporale "Pre-Mainshock" (⏳ IL CUORE DEL PROGETTO)
 
-* Input: Coordinate (Lat, Lon, Depth), Tempo.
-* Target: b-value (o Magnitudo, a seconda di come avete impostato il problema di regressione/classificazione).
-* Mentre fai il tuning, salvare i parametri nel file del Passo 1.
+*Obiettivo: Vedere se lo stress sale (e il b-value scende) PRIMA del 26 Ottobre.*
+Questa è la parte che risponde alla domanda di ricerca: *"Can we detect these physical stress accumulations in the macroscopic statistics?"*.
 
----
+1. **Filtro Temporale (Time Window):**
+Prendete solo il "Cluster Nord" (Visso/Norcia) e filtrate i dati per il periodo tra i due eventi:
+**Start:** 24 Agosto 2016 (Subito dopo Amatrice)
+**End:** 26 Ottobre 2016 (Subito prima di Visso).
 
-### Passo 5: Scrittura del Report
-Solo ora apri il file del report. La struttura sarà facilissima perché abbiamo già tutto:
-1. **Data Prep:** "Abbiamo filtrato i dati seguendo Collettini 2022..."
-2. **Method:** "Abbiamo settato gli iperparametri così (vedi tabella)..."
-3. **Results:** "Il modello conferma che nelle zone ad alto stress (on-fault) il b-value scende a 1.2, mentre fuori sale..."
+2. **Calcolo b-value scorrevole (Moving Window):**
+Invece di un numero unico, calcolate il b-value su finestre mobili (es. ogni 200-500 eventi che scorrono nel tempo).
+
+3. **Il Grafico della Verità:**
+Create un grafico con:
+* Asse X: Tempo (Giorni da Agosto a Ottobre).
+* Asse Y: b-value.
+
+
+### 🏆 Fase 4: Interpretazione (PER IL REPORT)
+
+**Ipotesi:** Vi aspettate un trend **negativo** (il b-value scende) avvicinandosi a fine ottobre.
+ 
+**Significato:** Se il b-value scende, significa che lo stress differenziale sta aumentando e le micro-fratture si stanno unendo 
+(proprio come dice Laurenti et al. per le onde). Questo sarebbe il "segnale precursore" statistico che cercavate.
