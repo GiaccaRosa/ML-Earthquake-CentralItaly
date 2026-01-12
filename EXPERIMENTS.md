@@ -7,3 +7,5 @@
 | 02 | 09/01| DBSCAN_Opt | **DBSCAN** <br> `eps=1.0` <br> `min_samples=20` | $M_c = 1.3$ | **Fault: 1.25** ✅ <br> **Dist: 1.76** ✅ | **TARGET RAGGIUNTO.** Isolamento Evaporiti riuscito. Match perfetto col paper. |
 | 03 | 11/01| FASE_2 | **Spatial Cut** <br> (Separazione N/S) | Lat $> 42.76$ <br> (Zona Visso) | N. Eventi: <br> 204.594 | **Isolamento Nucleazione.** Separata la zona Nord (in preparazione) da Amatrice (post-sisma). |
 | 04 | 11/01| FASE_3 | **Rolling b-value** <br> `window=2000` | 24 Aug - 26 Oct <br> (Pre-Visso) | **Trend Decrescente** 📉 <br> (Stress Aumenta) |Il b-value crolla prima del 26/10. Prova fisica del caricamento. |
+| 05 | 12/01 | FASE_3_OPT |High-Res Rolling  window=400  step=20 | Zoom Ottobre  (Nucleazione) | Stress Drop 📉  b:1.5→1.1 | PISTOLA FUMANTE. La finestra ridotta svela il crollo verticale negli ultimi 5 giorni (Locking). |
+| 06 | 12/01 | FINAL_REP | Laurenti Style  (Rate + b-value) | Mc​=1.3  Cluster Nord | Match Fisico 🎯  Fluidi vs Stress | VALIDAZIONE TOTALE. Replica statistica dei precursori (Giallo=Fluidi, Rosso=Stress). |
